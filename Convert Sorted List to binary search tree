@@ -1,0 +1,119 @@
+import java.util.*;
+
+public class Solution {
+
+    // Definition for singly-linked list.
+    public static class ListNode {
+        int val;
+        ListNode next;
+        ListNode() {}
+        ListNode(int val) { this.val = val; }
+        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+    }
+
+    // Definition for a binary tree node.
+    public static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode() {}
+        TreeNode(int val) { this.val = val; }
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        return toBST(head, null);
+    }
+
+    private TreeNode toBST(ListNode head, ListNode tail) {
+        if (head == tail) {
+            return null;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != tail && fast.next != tail) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        
+        TreeNode node = new TreeNode(slow.val);
+        node.left = toBST(head, slow);
+        node.right = toBST(slow.next, tail);
+        return node;
+    }
+
+    // Helper to create linked list from int array
+    public ListNode createLinkedList(int[] values) {
+        if (values.length == 0) return null;
+        ListNode head = new ListNode(values[0]);
+        ListNode current = head;
+        for (int i = 1; i < values.length; i++) {
+            current.next = new ListNode(values[i]);
+            current = current.next;
+        }
+        return head;
+    }
+
+    // Level-order traversal print for BST to verify output
+    public void printLevelOrder(TreeNode root) {
+        if (root == null) {
+            System.out.println("[]");
+            return;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        List<String> result = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if (node != null) {
+                result.add(String.valueOf(node.val));
+                queue.add(node.left);
+                queue.add(node.right);
+            } else {
+                result.add("null");
+            }
+        }
+
+        // Remove trailing nulls
+        int i = result.size() - 1;
+        while (i >= 0 && result.get(i).equals("null")) {
+            result.remove(i);
+            i--;
+        }
+
+        System.out.println(result);
+    }
+
+    // Main method for testing
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Solution sol = new Solution();
+
+        System.out.println("Enter sorted integers separated by spaces:");
+        String line = scanner.nextLine();
+        String[] tokens = line.trim().split("\\s+");
+
+        int[] input = new int[tokens.length];
+        for (int i = 0; i < tokens.length; i++) {
+            input[i] = Integer.parseInt(tokens[i]);
+        }
+
+        ListNode head = sol.createLinkedList(input);
+        TreeNode root = sol.sortedListToBST(head);
+
+        System.out.print("Level-order BST output: ");
+        sol.printLevelOrder(root);
+
+        scanner.close();
+    }
+}
