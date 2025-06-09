@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class Solution {
+    public String[] reorderLogFiles(String[] logs) {
+        // Separate letter-logs and digit-logs
+        List<String> letterLogs = new ArrayList<>();
+        List<String> digitLogs = new ArrayList<>();
+        
+        for (String log : logs) {
+            int spaceIndex = log.indexOf(' ');
+            if (Character.isDigit(log.charAt(spaceIndex + 1))) {
+                digitLogs.add(log);
+            } else {
+                letterLogs.add(log);
+            }
+        }
+
+        // Sort letter-logs: first by content, then by identifier
+        Collections.sort(letterLogs, (log1, log2) -> {
+            String[] parts1 = log1.split(" ", 2);
+            String[] parts2 = log2.split(" ", 2);
+            int contentComparison = parts1[1].compareTo(parts2[1]);
+            if (contentComparison != 0) {
+                return contentComparison;
+            }
+            return parts1[0].compareTo(parts2[0]);
+        });
+
+        // Combine letter-logs and digit-logs
+        letterLogs.addAll(digitLogs);
+        return letterLogs.toArray(new String[0]);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        String[] logs = {
+            "a1 9 2 3 1",
+            "g1 act car",
+            "zo4 4 7",
+            "ab1 off key dog",
+            "a8 act zoo"
+        };
+        String[] result = solution.reorderLogFiles(logs);
+        System.out.println(Arrays.toString(result));
+    }
+}
