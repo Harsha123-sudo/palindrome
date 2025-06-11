@@ -1,0 +1,55 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+class Solution {
+    public int[] sortArray(int[] nums) {
+        quick(nums, 0, nums.length - 1);
+        return nums;
+    }
+
+    void quick(int[] nums, int low, int high) {
+        if (low >= high) return;
+
+        int s = low;
+        int e = high;
+        int mid = (s + e) / 2;
+        int pivot = nums[mid];
+
+        while (s <= e) {
+            while (nums[s] < pivot) s++;
+            while (nums[e] > pivot) e--;
+
+            if (s <= e) {
+                int temp = nums[s];
+                nums[s] = nums[e];
+                nums[e] = temp;
+                s++;
+                e--;
+            }
+        }
+
+        if (low < e) quick(nums, low, e);
+        if (s < high) quick(nums, s, high);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Solution sol = new Solution();
+
+        System.out.println("Enter the integers separated by spaces:");
+
+        String line = sc.nextLine();
+        String[] parts = line.trim().split("\\s+");
+
+        int[] arr = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            arr[i] = Integer.parseInt(parts[i]);
+        }
+
+        System.out.println("Original array: " + Arrays.toString(arr));
+        sol.sortArray(arr);
+        System.out.println("Sorted array:   " + Arrays.toString(arr));
+
+        sc.close();
+    }
+}
